@@ -3,7 +3,7 @@ name: Epic
 about: An epic is a large body of work that can be broken down into a number of smaller
   stories.
 title: "[Epic Title]"
-labels: ''
+labels: epic
 assignees: ''
 
 ---
