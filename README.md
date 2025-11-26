@@ -4,5 +4,4 @@ The .github repository (not to be confused with the .github directory that you m
 Reference: [GitHub documentation](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file)
 
 # Contents:
-- Issue Templates (Epic, Bug, and Feature)
 - Stacklok's code of conduct
