@@ -27,10 +27,6 @@
     <img src="./images/toolhive-diagram-light.svg" alt="ToolHive platform diagram" width="800" />
   </picture>
 </p>
-<p align="center">
-
-
-</p>
 
 <br>
 <table align="center">
