@@ -8,7 +8,15 @@
 [Website](https://stacklok.com/) | [Blog](https://dev.to/stacklok) | [LinkedIn](https://linkedin.com/company/stacklok)
 
 ## MCP servers made simple and secure
+<br>
 
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./images/toolhive-wordmark-white.svg">
+    <img src="./images/toolhive-wordmark-black.svg" alt="Stacklok wordmark" width="200" />
+  </picture>
+
+<br>
+  
 [ToolHive](https://toolhive.dev) is the open source MCP platform built and maintained with the community
 
 </div>
@@ -19,17 +27,15 @@
     <img src="./images/toolhive-diagram-light.svg" alt="ToolHive platform diagram" width="800" />
   </picture>
 </p>
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./images/toolhive-wordmark-white.svg">
-    <img src="./images/toolhive-wordmark-black.svg" alt="Stacklok wordmark" width="200" />
-  </picture>
-</p>
 
+<br>
 <table align="center">
 <tr>
 <td width="50%" valign="top">
 
+
+<br>
+  
 **Get Started** 🚀
 
 - [ToolHive overview](https://docs.stacklok.com/toolhive)
@@ -46,8 +52,9 @@
 
 </td>
 <td width="50%" valign="top">
+<br>
 
-**Enterprise Integrations** 🔌
+  **Enterprise Integrations** 🔌
 
 - [AI client support](https://docs.stacklok.com/toolhive/reference/client-compatibility)
 - [Custom registry](https://docs.stacklok.com/toolhive/tutorials/custom-registry)
@@ -62,6 +69,7 @@
 - [Contributing](https://docs.stacklok.com/toolhive/contributing) – Help build ToolHive
 - [Good first issues](https://github.com/stacklok/toolhive/issues?q=label%3A%22good+first+issue%22+is%3Aissue+is%3Aopen)
 
+<br>
 </td>
 </tr>
 </table>
