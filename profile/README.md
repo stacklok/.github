@@ -8,7 +8,15 @@
 [Website](https://stacklok.com/) | [Blog](https://dev.to/stacklok) | [LinkedIn](https://linkedin.com/company/stacklok)
 
 ## MCP servers made simple and secure
+<br>
 
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./images/toolhive-wordmark-white.svg">
+    <img src="./images/toolhive-wordmark-black.svg" alt="Stacklok wordmark" width="200" />
+  </picture>
+
+<br>
+  
 [ToolHive](https://toolhive.dev) is the open source MCP platform built and maintained with the community
 
 </div>
@@ -20,11 +28,8 @@
   </picture>
 </p>
 <p align="center">
-  <br>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./images/toolhive-wordmark-white.svg">
-    <img src="./images/toolhive-wordmark-black.svg" alt="Stacklok wordmark" width="200" />
-  </picture>
+
+
 </p>
 
 <br>
