@@ -1,22 +1,23 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./images/stacklok-wordmark-gradient.svg">
-  <img src="./images/stacklok-wordmark-gradient.svg" alt="Stacklok wordmark" width="500" />
+  <source media="(prefers-color-scheme: dark)" srcset="./images/stacklok-default-light-green.svg">
+  <img src="./images/stacklok-default-dark-green.svg" alt="Stacklok wordmark" width="500" />
 </picture>
 
 [Website](https://stacklok.com/) | [Blog](https://dev.to/stacklok) | [LinkedIn](https://linkedin.com/company/stacklok)
 
 ## MCP servers made simple and secure
+
 <br>
 
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./images/toolhive-wordmark-white.svg">
-    <img src="./images/toolhive-wordmark-black.svg" alt="Stacklok wordmark" width="200" />
+    <source media="(prefers-color-scheme: dark)" srcset="./images/toolhive-default-white.svg">
+    <img src="./images/toolhive-default-black.svg" alt="Stacklok wordmark" width="200" />
   </picture>
 
 <br>
-  
+
 [ToolHive](https://toolhive.dev) is the open source MCP platform built and maintained with the community
 
 </div>
@@ -32,7 +33,6 @@
 <table align="center">
 <tr>
 <td width="50%" valign="top">
-
 
 <br>
   
@@ -54,7 +54,7 @@
 <td width="50%" valign="top">
 <br>
 
-  **Enterprise Integrations** 🔌
+**Enterprise Integrations** 🔌
 
 - [AI client support](https://docs.stacklok.com/toolhive/reference/client-compatibility)
 - [Custom registry](https://docs.stacklok.com/toolhive/tutorials/custom-registry)
