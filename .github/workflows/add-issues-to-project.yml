@@ -37,14 +37,14 @@ on:
         description: >
           App ID of a GitHub App installed on the org with "Organization
           Projects: Write" permission. The default GITHUB_TOKEN cannot write
-          to an org Projects v2 board.
+          to an org Projects v2 board. The App used by flow-metrics-report.yml
+          in stacklok/claude-plugins may be reusable here, but its current
+          installation permissions are Organization Projects: Read only and
+          would need to be upgraded to Write.
         required: true
       app-private-key:
         description: "Private key for the GitHub App identified by app-id."
         required: true
-
-permissions:
-  contents: read
 
 jobs:
   add-to-project:
