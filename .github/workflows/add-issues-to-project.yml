@@ -10,6 +10,40 @@ name: Add issues to project board
 
 on:
   workflow_call:
+    # Internal use only — for repos owned by the Stacklok organization. This
+    # workflow mutates an internal Projects v2 board and assumes the caller
+    # supplies credentials for a Stacklok-installed GitHub App; it is not
+    # intended to be called by repositories outside the org, even though the
+    # repo hosting it is public.
+    #
+    # Callers trigger on issue creation and pass the board's identifying IDs
+    # as inputs, plus GitHub App credentials as secrets:
+    #
+    #   name: Add issues to project board
+    #   on:
+    #     issues:
+    #       types: [opened]
+    #   jobs:
+    #     add-to-project:
+    #       uses: stacklok/.github/.github/workflows/add-issues-to-project.yml@main
+    #       with:
+    #         project-number: 73
+    #         project-id: PVT_kwDOBpIYMs4BQrJB
+    #         status-field-id: PVTSSF_lADOBpIYMs4BQrJBzg-ucFM
+    #         status-option-id: f75ad846
+    #       secrets:
+    #         app-id: ${{ secrets.FLOW_METRICS_APP_ID }}
+    #         app-private-key: ${{ secrets.FLOW_METRICS_APP_PRIVATE_KEY }}
+    #
+    # Find project-id, status-field-id, and status-option-id for a board via:
+    #   gh api graphql -f query='
+    #     query { organization(login: "stacklok") { projectV2(number: 73) {
+    #       id
+    #       field(name: "Status") { ... on ProjectV2SingleSelectField {
+    #         id
+    #         options { id name }
+    #       } }
+    #     } } }'
     inputs:
       project-number:
         description: "Projects v2 project number (e.g. 73)"
