@@ -16,11 +16,10 @@ on:
     # intended to be called by repositories outside the org, even though the
     # repo hosting it is public.
     #
-    # Callers trigger on issue creation and pass the board's project number
-    # plus the target Status option's human-readable name, plus GitHub App
-    # credentials as secrets. The workflow resolves the project's and
-    # Status option's underlying node IDs itself — no need to look them up
-    # by hand:
+    # Callers trigger on issue creation and pass the board's project number,
+    # plus GitHub App credentials as secrets. The workflow resolves the
+    # project's and Status option's underlying node IDs itself — no need to
+    # look them up by hand. status-option-name defaults to "Icebox":
     #
     #   name: Add issues to project board
     #   on:
@@ -31,7 +30,6 @@ on:
     #       uses: stacklok/.github/.github/workflows/add-issues-to-project.yml@main
     #       with:
     #         project-number: 73
-    #         status-option-name: Icebox
     #       secrets:
     #         app-id: ${{ secrets.FLOW_METRICS_APP_ID }}
     #         app-private-key: ${{ secrets.FLOW_METRICS_APP_PRIVATE_KEY }}
@@ -46,9 +44,10 @@ on:
         required: false
         default: Status
       status-option-name:
-        description: "Name of the target option (within status-field-name) to set on the new item, e.g. Icebox"
+        description: "Name of the target option (within status-field-name) to set on the new item"
         type: string
-        required: true
+        required: false
+        default: Icebox
       owner:
         description: "Organization that owns the project"
         type: string
