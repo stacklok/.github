@@ -1,0 +1,90 @@
+# Auto-add new issues to a Stacklok org Projects v2 board and set an
+# initial Status.
+#
+# The Projects "Auto-add to project" built-in workflow (Project → ⋯ →
+# Workflows) only supports one repository per rule, with no way to add a
+# second repo or a second parallel rule — so repos needing this behavior
+# get it via a checked-in Action instead.
+
+name: Add issues to project board
+
+on:
+  workflow_call:
+    inputs:
+      project-number:
+        description: "Projects v2 project number (e.g. 73)"
+        type: number
+        required: true
+      project-id:
+        description: "Projects v2 node ID (e.g. PVT_...)"
+        type: string
+        required: true
+      status-field-id:
+        description: "Node ID of the project's Status field (e.g. PVTSSF_...)"
+        type: string
+        required: true
+      status-option-id:
+        description: "Node ID of the target Status option to set on the new item"
+        type: string
+        required: true
+      owner:
+        description: "Organization that owns the project"
+        type: string
+        required: false
+        default: stacklok
+    secrets:
+      app-id:
+        description: >
+          App ID of a GitHub App installed on the org with "Organization
+          Projects: Write" permission. The default GITHUB_TOKEN cannot write
+          to an org Projects v2 board.
+        required: true
+      app-private-key:
+        description: "Private key for the GitHub App identified by app-id."
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.app-id }}
+          private-key: ${{ secrets.app-private-key }}
+          owner: ${{ inputs.owner }}
+
+      - name: Add issue to project and set Status
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          PROJECT_NUMBER: ${{ inputs.project-number }}
+          PROJECT_OWNER: ${{ inputs.owner }}
+          PROJECT_ID: ${{ inputs.project-id }}
+          STATUS_FIELD_ID: ${{ inputs.status-field-id }}
+          STATUS_OPTION_ID: ${{ inputs.status-option-id }}
+        run: |
+          set -euo pipefail
+
+          item_id=$(gh project item-add "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --url "$ISSUE_URL" --format json --jq '.id')
+
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $value: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $value }
+              }) {
+                projectV2Item { id }
+              }
+            }' \
+            -f project="$PROJECT_ID" \
+            -f item="$item_id" \
+            -f field="$STATUS_FIELD_ID" \
+            -f value="$STATUS_OPTION_ID"
