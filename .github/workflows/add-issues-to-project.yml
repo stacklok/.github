@@ -1,0 +1,164 @@
+# Auto-add new issues to a Stacklok org Projects v2 board and set an
+# initial Status.
+#
+# The Projects "Auto-add to project" built-in workflow (Project → ⋯ →
+# Workflows) only supports one repository per rule, with no way to add a
+# second repo or a second parallel rule — so repos needing this behavior
+# get it via a checked-in Action instead.
+
+name: Add issues to project board
+
+on:
+  workflow_call:
+    # Internal use only — for repos owned by the Stacklok organization. This
+    # workflow mutates an internal Projects v2 board and assumes the caller
+    # supplies credentials for a Stacklok-installed GitHub App; it is not
+    # intended to be called by repositories outside the org, even though the
+    # repo hosting it is public.
+    #
+    # Callers trigger on issue creation and pass the board's project number,
+    # plus GitHub App credentials as secrets. The workflow resolves the
+    # project's and Status option's underlying node IDs itself — no need to
+    # look them up by hand. status-option-name defaults to "Icebox":
+    #
+    #   name: Add issues to project board
+    #   on:
+    #     issues:
+    #       types: [opened]
+    #   jobs:
+    #     add-to-project:
+    #       uses: stacklok/.github/.github/workflows/add-issues-to-project.yml@main
+    #       with:
+    #         project-number: 73
+    #       secrets:
+    #         app-id: ${{ secrets.FLOW_METRICS_APP_ID }}
+    #         app-private-key: ${{ secrets.FLOW_METRICS_APP_PRIVATE_KEY }}
+    inputs:
+      project-number:
+        description: "Projects v2 project number (e.g. 73)"
+        type: number
+        required: true
+      status-field-name:
+        description: "Name of the single-select field to set on the new item"
+        type: string
+        required: false
+        default: Status
+      status-option-name:
+        description: "Name of the target option (within status-field-name) to set on the new item"
+        type: string
+        required: false
+        default: Icebox
+      owner:
+        description: "Organization that owns the project"
+        type: string
+        required: false
+        default: stacklok
+    secrets:
+      app-id:
+        description: >
+          App ID of a GitHub App installed on the org with "Organization
+          Projects: Write" permission. The default GITHUB_TOKEN cannot write
+          to an org Projects v2 board. The App used by flow-metrics-report.yml
+          in stacklok/claude-plugins may be reusable here, but its current
+          installation permissions are Organization Projects: Read only and
+          would need to be upgraded to Write.
+        required: true
+      app-private-key:
+        description: "Private key for the GitHub App identified by app-id."
+        required: true
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Requires "Organization Projects: Write" on the App installation —
+      # the default GITHUB_TOKEN cannot write to an org Projects v2 board.
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.app-id }}
+          private-key: ${{ secrets.app-private-key }}
+          owner: ${{ inputs.owner }}
+
+      - name: Resolve project and Status option node IDs
+        id: resolve
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PROJECT_OWNER: ${{ inputs.owner }}
+          PROJECT_NUMBER: ${{ inputs.project-number }}
+          STATUS_FIELD_NAME: ${{ inputs.status-field-name }}
+          STATUS_OPTION_NAME: ${{ inputs.status-option-name }}
+        run: |
+          set -euo pipefail
+
+          result=$(gh api graphql -f query='
+            query($owner: String!, $number: Int!, $fieldName: String!) {
+              organization(login: $owner) {
+                projectV2(number: $number) {
+                  id
+                  field(name: $fieldName) {
+                    ... on ProjectV2SingleSelectField {
+                      id
+                      options { id name }
+                    }
+                  }
+                }
+              }
+            }' \
+            -f owner="$PROJECT_OWNER" \
+            -F number="$PROJECT_NUMBER" \
+            -f fieldName="$STATUS_FIELD_NAME")
+
+          project_id=$(jq -r '.data.organization.projectV2.id' <<<"$result")
+          field_id=$(jq -r '.data.organization.projectV2.field.id' <<<"$result")
+          option_id=$(jq -r --arg name "$STATUS_OPTION_NAME" \
+            '.data.organization.projectV2.field.options[] | select(.name == $name) | .id' <<<"$result")
+
+          if [[ -z "$project_id" || "$project_id" == "null" ]]; then
+            echo "::error::Could not resolve project ${PROJECT_OWNER}/${PROJECT_NUMBER}" >&2
+            exit 1
+          fi
+          if [[ -z "$field_id" || "$field_id" == "null" ]]; then
+            echo "::error::Could not resolve field '${STATUS_FIELD_NAME}' on project ${PROJECT_OWNER}/${PROJECT_NUMBER}" >&2
+            exit 1
+          fi
+          if [[ -z "$option_id" ]]; then
+            echo "::error::Could not resolve option '${STATUS_OPTION_NAME}' on field '${STATUS_FIELD_NAME}'" >&2
+            exit 1
+          fi
+
+          echo "project-id=$project_id" >> "$GITHUB_OUTPUT"
+          echo "status-field-id=$field_id" >> "$GITHUB_OUTPUT"
+          echo "status-option-id=$option_id" >> "$GITHUB_OUTPUT"
+
+      - name: Add issue to project and set Status
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          PROJECT_NUMBER: ${{ inputs.project-number }}
+          PROJECT_OWNER: ${{ inputs.owner }}
+          PROJECT_ID: ${{ steps.resolve.outputs.project-id }}
+          STATUS_FIELD_ID: ${{ steps.resolve.outputs.status-field-id }}
+          STATUS_OPTION_ID: ${{ steps.resolve.outputs.status-option-id }}
+        run: |
+          set -euo pipefail
+
+          item_id=$(gh project item-add "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --url "$ISSUE_URL" --format json --jq '.id')
+
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $value: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $value }
+              }) {
+                projectV2Item { id }
+              }
+            }' \
+            -f project="$PROJECT_ID" \
+            -f item="$item_id" \
+            -f field="$STATUS_FIELD_ID" \
+            -f value="$STATUS_OPTION_ID"
