@@ -31,7 +31,13 @@ jobs:
           script: |
             const SENTINEL = '<!-- pr-issue-check-warning -->';
             const LABEL = 'needs-issue-link';
-            const LINK_REGEX = /\b(closes|fixes|resolves|close|fix|resolve)\s+#?(\d+)\b/gi;
+            // Closing keywords: merging the PR auto-closes the referenced issue.
+            const CLOSE_REGEX = /\b(closes|fixes|resolves|close|fix|resolve)\s+#?(\d+)\b/gi;
+            // Non-closing references: link the PR to an issue without auto-closing it.
+            // Needed for issues implemented across multiple PRs — using a closing
+            // keyword on every one of them would close the issue on the first merge,
+            // before the work is actually done.
+            const REF_REGEX = /\b(relates to|related to|part of|refs?|references?|contributes to|follow-?up to)\s+#?(\d+)\b/gi;
 
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
@@ -113,12 +119,15 @@ jobs:
             await ensureLabelExists();
 
             const body = context.payload.pull_request.body || '';
-            const matches = [...body.matchAll(LINK_REGEX)];
+            const matches = [...body.matchAll(CLOSE_REGEX), ...body.matchAll(REF_REGEX)];
             const issueNumbers = [...new Set(matches.map(m => parseInt(m[2], 10)))];
 
             if (issueNumbers.length === 0) {
               await upsertComment(
-                `${SENTINEL}\n## Missing Issue Link\n\nThis PR does not appear to reference a GitHub issue.\nPlease add a closing keyword, e.g.: \`Closes #123\`\nSupported: closes, fixes, resolves, close, fix, resolve (case insensitive)`
+                `${SENTINEL}\n## Missing Issue Link\n\nThis PR does not appear to reference a GitHub issue.\nPlease add a closing keyword (e.g. \`Closes #123\`) if this PR fully resolves the issue, ` +
+                `or a non-closing reference (e.g. \`Part of #123\`) if it's one of several PRs implementing it.\n` +
+                `Supported closing keywords: closes, fixes, resolves, close, fix, resolve (case insensitive)\n` +
+                `Supported non-closing references: relates to, related to, part of, refs, ref, references, reference, contributes to, follow-up to (case insensitive)`
               );
               await addWarningLabel();
               core.warning('PR has no linked issue');
