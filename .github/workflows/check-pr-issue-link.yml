@@ -133,8 +133,12 @@ jobs:
                 const ownerRepo = m[2];
                 const number = parseInt(m[3], 10);
                 const [refOwner, refRepo] = ownerRepo ? ownerRepo.split('/') : [owner, repo];
-                const isCrossRepo = Boolean(ownerRepo);
-                const key = `${refOwner}/${refRepo}#${number}`;
+                // Owner/repo names are case-insensitive on GitHub. A prefix is only
+                // truly "cross-repo" if it names a different repo than context.repo —
+                // an explicit same-repo `owner/repo#N` still auto-closes normally.
+                const isCrossRepo = Boolean(ownerRepo) &&
+                  (refOwner.toLowerCase() !== owner.toLowerCase() || refRepo.toLowerCase() !== repo.toLowerCase());
+                const key = `${refOwner.toLowerCase()}/${refRepo.toLowerCase()}#${number}`;
                 const existing = refsByKey.get(key);
                 if (existing) {
                   existing.isClose = existing.isClose || isClose;
