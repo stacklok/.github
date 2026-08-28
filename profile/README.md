@@ -49,7 +49,6 @@ The open source MCP platform built and maintained with the community
 - [toolhive](https://github.com/stacklok/toolhive) – CLI, API, and Kubernetes Operator
 - [toolhive-studio](https://github.com/stacklok/toolhive-studio) – Desktop UI
 - [toolhive-registry-server](https://github.com/stacklok/toolhive-registry-server) – Registry API
-- [toolhive-cloud-ui](https://github.com/stacklok/toolhive-cloud-ui) – Cloud UI
 
 </td>
 <td width="50%" valign="top">
