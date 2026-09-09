@@ -67,7 +67,7 @@ The open source MCP platform built and maintained with the community
 
 - [Discord](https://discord.gg/stacklok) – Join the conversation
 - [Contributing](https://docs.stacklok.com/toolhive/contributing) – Help build ToolHive
-- [Good first issues](https://github.com/stacklok/toolhive/issues?q=label%3A%22good+first+issue%22+is%3Aissue+is%3Aopen)
+- [Good first issues](https://github.com/stacklok/toolhive/issues?q=label%3Agood-first-issue+is%3Aissue+is%3Aopen+no%3Aassignee)
 
 <br>
 </td>
