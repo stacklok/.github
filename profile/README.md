@@ -5,18 +5,66 @@
   <img src="./images/stacklok-default-dark-green.svg" alt="Stacklok wordmark" width="500" />
 </picture>
 
-[Website](https://stacklok.com/) | [Blog](https://stacklok.com/blog/) | [LinkedIn](https://linkedin.com/company/stacklok)
+[Website](https://stacklok.com/) | [Blog](https://stacklok.com/blog/) | [LinkedIn](https://linkedin.com/company/stacklok) | [Discord](https://discord.gg/stacklok)
 
-## MCP servers made simple and secure
+## Open source infrastructure for AI agents and MCP servers
+
+</div>
+
+<br>
+
+<div align="center">
+
+<img src="./images/mecatl-mascot.png" alt="Mecatl mascot" width="90" align="middle" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./images/mecatl-default-white.svg">
+  <img src="./images/mecatl-default-black.svg" alt="Mecatl wordmark" width="180" align="middle" />
+</picture>
+
+### The open source cloud-native agent harness
+
+</div>
+
+<br>
+<table align="center">
+<tr>
+<td width="50%" valign="top">
 
 <br>
 
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./images/toolhive-default-white.svg">
-    <img src="./images/toolhive-default-black.svg" alt="Stacklok wordmark" width="200" />
-  </picture>
+**Get started** 🚀
+
+- [Website](https://mecatl.dev)
+- [Docs](https://mecatl.dev/docs)
+- [Repo](https://github.com/stacklok/mecatl)
+
+</td>
+<td width="50%" valign="top">
+<br>
+
+**Community** 👥
+
+- [Discord](https://discord.gg/stacklok) – Join the conversation
+- [Contributing](https://github.com/stacklok/mecatl/blob/main/CONTRIBUTING.md) – Help build Mecatl
+
+</td>
+</tr>
+</table>
 
 <br>
+
+---
+
+<br>
+
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./images/toolhive-default-white.svg">
+  <img src="./images/toolhive-default-black.svg" alt="ToolHive wordmark" width="200" />
+</picture>
+
+### MCP servers made simple and secure
 
 The open source MCP platform built and maintained with the community
 
