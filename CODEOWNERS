@@ -1,3 +1,6 @@
 # Workflow changes require maintainer review
 /.github/workflows/ @stacklok/maintain
 
+
+# OctoSTS org trust policies mint GitHub tokens for org repos
+/.github/chainguard/ @stacklok/maintain
