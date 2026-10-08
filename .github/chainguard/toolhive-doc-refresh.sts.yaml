@@ -1,0 +1,20 @@
+# The toolhive-doc-mcp refresh CronJob reads docs from three public repos.
+# The token only raises the GitHub API rate limit. It grants no write access.
+# The CronJob requests scope "stacklok" and identity "toolhive-doc-refresh".
+# Infra source: stacklok/infra flux/apps/toolhive-doc-mcp/cronjob.yaml.
+
+# EKS cluster OIDC issuers: dev-eks, staging-eks, production-eks.
+issuer_pattern: https://oidc\.eks\.us-east-1\.amazonaws\.com/id/(2B9CEB1C9C82A9475C828FA05327FA3B|5C4FEA4B26456FC60713BE9416A0FEC6|AE64839E8B984F745739BBF77BB0E457)
+subject: system:serviceaccount:toolhive-doc-mcp:toolhive-doc-refresh
+
+# Pin token exchanges to stacklok-octosts. The App ID is a string.
+app: '4886385'
+
+# Install stacklok-octosts on each repo in this list.
+repositories:
+  - toolhive
+  - toolhive-studio
+  - toolhive-catalog
+
+permissions:
+  contents: read
