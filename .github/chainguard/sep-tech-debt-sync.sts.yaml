@@ -1,0 +1,29 @@
+# SEP's tech debt sync copies issue form ratings into Stacklok project 74's
+# Debt fields. GITHUB_TOKEN cannot write org projects, so the workflow
+# exchanges its Actions OIDC token here. It requests scope "stacklok" and
+# identity "sep-tech-debt-sync".
+# SEP source: stacklok/stacklok-enterprise-platform
+# .github/workflows/bot-tech-debt-project-sync.yml.
+issuer: https://token.actions.githubusercontent.com
+subject: repo:stacklok/stacklok-enterprise-platform:ref:refs/heads/main
+
+# workflow_ref identifies the standalone workflow, including its branch.
+# OctoSTS anchors the expression to the entire claim value.
+claim_pattern:
+  repository_id: '1173448377'
+  repository_owner_id: '110237746'
+  workflow_ref: stacklok/stacklok-enterprise-platform/\.github/workflows/bot-tech-debt-project-sync\.yml@refs/heads/main
+
+# Pin token exchanges to stacklok-octosts. The App ID is a string.
+app: '4886385'
+
+# Install stacklok-octosts on each repo in this list. The workflow reads the
+# issue it adds to the project.
+repositories:
+  - stacklok-enterprise-platform
+
+# organization_projects covers every org project; the workflow writes only
+# project 74.
+permissions:
+  organization_projects: write
+  issues: read
