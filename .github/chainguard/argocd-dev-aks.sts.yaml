@@ -1,0 +1,21 @@
+# Argo CD on the dev-aks cluster reads stacklok/infra to sync its apps. A
+# CronJob in the argocd namespace exchanges its projected service account
+# token here every 30 minutes. It writes the GitHub token into the Argo CD
+# repo-creds Secret. It requests scope "stacklok" and identity
+# "argocd-dev-aks".
+# Infra source: stacklok/infra azure-aks/ (cluster) and the Argo CD bootstrap.
+
+# dev-aks OIDC issuer (westus3). The trailing slash is part of the iss claim.
+issuer: https://westus3.oic.prod-aks.azure.com/6a88f3cf-e238-4742-95ab-8aafca0b2b87/caa0aab0-2fcb-4088-ad5c-bbe477e9e5a5/
+subject: system:serviceaccount:argocd:argocd-repo-token
+
+# Pin token exchanges to stacklok-octosts. The App ID is a string.
+app: '4886385'
+
+# Install stacklok-octosts on each repo in this list.
+repositories:
+  - infra
+
+# Argo CD only clones and fetches. It never writes to the repo.
+permissions:
+  contents: read
