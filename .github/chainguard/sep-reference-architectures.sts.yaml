@@ -1,0 +1,27 @@
+# SEP's reference architecture publisher pushes a release branch to
+# enterprise-reference-architectures, opens a PR for review, and tags the
+# merged release. The workflow requests scope "stacklok" and identity
+# "sep-reference-architectures".
+# SEP source: stacklok/stacklok-enterprise-platform
+# .github/workflows/publish-reference-architectures.yml.
+issuer: https://token.actions.githubusercontent.com
+subject: repo:stacklok/stacklok-enterprise-platform:ref:refs/heads/main
+
+# workflow_ref identifies the standalone workflow, including its branch.
+# OctoSTS anchors the expression to the entire claim value.
+claim_pattern:
+  repository_id: '1173448377'
+  repository_owner_id: '110237746'
+  workflow_ref: stacklok/stacklok-enterprise-platform/\.github/workflows/publish-reference-architectures\.yml@refs/heads/main
+
+# Pin token exchanges to stacklok-octosts. The App ID is a string.
+app: '4886385'
+
+# Install stacklok-octosts on each repo in this list. The repo's tag ruleset
+# lets only stacklok-octosts create release tags.
+repositories:
+  - enterprise-reference-architectures
+
+permissions:
+  contents: write
+  pull_requests: write
